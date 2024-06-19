@@ -4,7 +4,7 @@ import ejs from 'ejs'
 import path from 'path'
 
 interface EmailOptions{
-    email: String,
+    email: string,
     subject: string,
     template: string,
     data: {[key:string]:any}

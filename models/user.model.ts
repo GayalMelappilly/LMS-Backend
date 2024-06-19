@@ -1,7 +1,7 @@
 import mongoose, { Document, Model, Schema } from 'mongoose'
 import bcrypt from 'bcryptjs'
 
-const emailRegexPattern: RegExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2, 3})+$/
+const emailRegexPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export interface IUser extends Document {
     name: string,
@@ -30,7 +30,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
             validator: function (value: string) {
                 return emailRegexPattern.test(value)
             },
-            message: "Please enter a valid email"
+            message: "Please enter a valid email address"
         }
     },
     password: {
