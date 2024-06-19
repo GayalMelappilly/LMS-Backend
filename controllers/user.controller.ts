@@ -18,6 +18,7 @@ interface IRegistrationBody {
 
 export const registerUser = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
+        console.log("REACHED")
         const {name, email, password} = req.body
 
         const isEmailExist = await userModel.findOne({email})
