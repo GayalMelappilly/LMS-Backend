@@ -8,6 +8,7 @@ import ejs from 'ejs'
 import path from 'path'
 import sendMail from '../utils/sendMail'
 import { createSourceMapSource } from 'typescript'
+import { sendToken } from '../utils/jwt'
 
 interface IRegistrationBody {
     name: string,
@@ -150,9 +151,10 @@ export const loginUser = CatchAsyncError(async (req: Request, res: Response, nex
             return next(new ErrorHandler("Invalid email or password", 401))
         }
 
-        
+        sendToken(user, 200, res)
           
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 400))
     }
 })
+
