@@ -123,3 +123,36 @@ export const activateUser = CatchAsyncError(async (req: Request, res: Response, 
         return next(new ErrorHandler(error.message, 400))
     }
 })
+
+
+interface ILoginRequest {
+    email: string,
+    password: string
+}
+
+export const loginUser = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email, password } = req.body as ILoginRequest
+
+        if(!email || !password){
+            return next(new ErrorHandler("Please provide email and password", 400))
+        }
+
+        const user = await userModel.findOne({email}).select('+password')
+
+        if(!user){
+            return next(new ErrorHandler("Invalid email or password", 401))
+        }
+
+        const isPassword = await user.comparePassword(password)
+
+        if(!isPassword){
+            return next(new ErrorHandler("Invalid email or password", 401))
+        }
+
+        
+          
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400))
+    }
+})
