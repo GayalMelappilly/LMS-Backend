@@ -98,14 +98,12 @@ export const getAllCourses = CatchAsyncError(async (req: Request, res: Response,
 
         if (isCacheExist) {
             const course = JSON.parse(isCacheExist)
-            console.log("REDIS")
             res.status(200).json({
                 success: true,
                 course
             })
         } else {
             const courses = await CourseModel.find().select('-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links')
-            console.log("MONGODB")
             await redis.set('allCourses', JSON.stringify(courses))
 
             res.status(200).json({
@@ -116,6 +114,32 @@ export const getAllCourses = CatchAsyncError(async (req: Request, res: Response,
 
 
     } catch (error: any) {
+        return next(new ErrorHandler(error.message, 500))
+    }
+})
+
+export const getCourseByUser = CatchAsyncError(async(req: Request, res: Response, next: NextFunction)=>{
+    try {
+        const userCourseList = req.user?.course
+        const courseId = req.params.id
+
+        const courseExist = userCourseList?.find((course:any) => course._id.toString() === courseId)
+
+        if(!courseExist){
+            return next(new ErrorHandler('You have not purchased this course', 400))
+        }
+
+        const course = await CourseModel.findById(courseId)
+
+        const content = course?.courseData
+
+        res.status(200).json({
+            success: true,
+            content
+        })
+
+        res.json({reached: req.user?.course})
+    } catch (error:any) {
         return next(new ErrorHandler(error.message, 500))
     }
 })
