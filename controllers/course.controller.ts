@@ -122,14 +122,14 @@ export const getAllCourses = CatchAsyncError(async (req: Request, res: Response,
     }
 })
 
-export const getCourseByUser = CatchAsyncError(async(req: Request, res: Response, next: NextFunction)=>{
+export const getCourseByUser = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userCourseList = req.user?.course
         const courseId = req.params.id
 
-        const courseExist = userCourseList?.find((course:any) => course._id.toString() === courseId)
+        const courseExist = userCourseList?.find((course: any) => course._id.toString() === courseId)
 
-        if(!courseExist){
+        if (!courseExist) {
             return next(new ErrorHandler('You have not purchased this course', 400))
         }
 
@@ -142,8 +142,8 @@ export const getCourseByUser = CatchAsyncError(async(req: Request, res: Response
             content
         })
 
-        res.json({reached: req.user?.course})
-    } catch (error:any) {
+        res.json({ reached: req.user?.course })
+    } catch (error: any) {
         return next(new ErrorHandler(error.message, 500))
     }
 })
@@ -157,23 +157,23 @@ interface IAddQuestionData {
 export const addQuestion = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        const { question, courseId, contentId }: IAddQuestionData = req.body 
+        const { question, courseId, contentId }: IAddQuestionData = req.body
         const course = await CourseModel.findById(courseId)
 
-        if(!mongoose.Types.ObjectId.isValid(contentId)){
+        if (!mongoose.Types.ObjectId.isValid(contentId)) {
             return next(new ErrorHandler('Invalid content id', 400))
         }
 
-        const courseContent = course?.courseData?.find((item: any) => item._id.equals(contentId) ) //equals same as item._id === contentId
+        const courseContent = course?.courseData?.find((item: any) => item._id.equals(contentId)) //equals same as item._id === contentId
 
-        if(!courseContent){
+        if (!courseContent) {
             return next(new ErrorHandler('Content not found', 400))
         }
 
         const newQuestion: any = {
             user: req.user,
             question,
-            quesionReplies:[]
+            quesionReplies: []
         }
 
         courseContent.questions.push(newQuestion)
@@ -181,7 +181,7 @@ export const addQuestion = CatchAsyncError(async (req: Request, res: Response, n
         await course?.save()
 
         res.status(200).json({
-            success:true,
+            success: true,
             course
         })
 
@@ -197,25 +197,25 @@ interface IAddAnswerData {
     questionId: string
 }
 
-export const addAnswer = CatchAsyncError(async(req: Request, res: Response, next: NextFunction) => {
+export const addAnswer = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        
-        const {answer, courseId, contentId, questionId}: IAddAnswerData = req.body
+
+        const { answer, courseId, contentId, questionId }: IAddAnswerData = req.body
         const course = await CourseModel.findById(courseId)
 
-        if(!mongoose.Types.ObjectId.isValid(contentId)){
+        if (!mongoose.Types.ObjectId.isValid(contentId)) {
             return next(new ErrorHandler('Invalid content id', 400))
         }
 
-        const courseContent = course?.courseData?.find((item: any) => item._id.equals(contentId) ) //equals same as item._id === contentId
+        const courseContent = course?.courseData?.find((item: any) => item._id.equals(contentId)) //equals same as item._id === contentId
 
-        if(!courseContent){
+        if (!courseContent) {
             return next(new ErrorHandler('Content not found', 400))
         }
 
         const question = courseContent?.questions?.find((item: any) => item._id.equals(questionId))
 
-        if(!question){
+        if (!question) {
             return next(new ErrorHandler('Question not found', 400))
         }
 
@@ -228,14 +228,14 @@ export const addAnswer = CatchAsyncError(async(req: Request, res: Response, next
 
         await course?.save()
 
-        if(req.user?._id === question.user._id){
+        if (req.user?._id === question.user._id) {
             // Create a notification
-        }else{
+        } else {
             const data = {
                 name: question.user.name,
                 title: courseContent.title,
             }
-            
+
             const html = await ejs.renderFile(path.join(__dirname, "../mails/question-reply-mail.ejs"), data)
 
             try {
@@ -251,7 +251,7 @@ export const addAnswer = CatchAsyncError(async(req: Request, res: Response, next
         }
 
         res.status(200).json({
-            success:true,
+            success: true,
             course
         })
 
@@ -266,22 +266,22 @@ interface IAddReviewData {
     userId: string
 }
 
-export const addReview = CatchAsyncError(async(req: Request, res: Response, next: NextFunction) => {
+export const addReview = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
 
         const userCourseList = req.user?.course
 
         const courseId = req.params.id
 
-        const courseExist = userCourseList?.some((course:any) => course._id.toString() === courseId.toString())
+        const courseExist = userCourseList?.some((course: any) => course._id.toString() === courseId.toString())
 
-        if(!courseExist){
+        if (!courseExist) {
             return next(new ErrorHandler('You have not purchased this course', 400))
         }
 
         const course = await CourseModel.findById(courseId)
 
-        const {review, rating}: IAddReviewData = req.body
+        const { review, rating }: IAddReviewData = req.body
 
         const reviewData: any = {
             user: req.user,
@@ -293,11 +293,11 @@ export const addReview = CatchAsyncError(async(req: Request, res: Response, next
 
         let avg = 0
 
-        course?.reviews.forEach((rev: any)=>{
+        course?.reviews.forEach((rev: any) => {
             avg += rev.rating
         })
 
-        if(course){
+        if (course) {
             course.ratings = avg / course.reviews.length // calculating avg rating.
         }
 
@@ -311,12 +311,57 @@ export const addReview = CatchAsyncError(async(req: Request, res: Response, next
         // create notification
 
         res.status(200).json({
-            success:true,
+            success: true,
             course
         })
-    
+
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 500))
     }
 })
 
+interface IAddReviewReplyData {
+    comment: string,
+    courseId: string,
+    reviewId: string
+}
+
+export const addReplyToReview = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+        const { comment, courseId, reviewId }: IAddReviewReplyData = req.body
+
+        const course = await CourseModel.findById(courseId)
+
+        if (!course) {
+            return next(new ErrorHandler('Course not found', 400))
+        }
+
+        const review = course?.reviews?.find((rev: any) => rev._id.toString() === reviewId)
+
+        if (!review) {
+            return next(new ErrorHandler('Review not found', 400))
+        }
+
+        const replyData: any = {
+            user: req.user,
+            comment
+        }
+
+        if (!review.commentReplies) {
+            review.commentReplies = []
+        }
+
+        review.commentReplies?.push(replyData)
+
+        await course?.save()
+
+        res.status(200).json({
+            success: true,
+            course
+        })
+
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 500))
+    }
+})
