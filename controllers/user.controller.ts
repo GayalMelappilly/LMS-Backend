@@ -10,7 +10,7 @@ import sendMail from '../utils/sendMail'
 import { sendToken } from '../utils/jwt'
 import { redis } from '../utils/redis'
 import { accessTokenOptions, refreshTokenOptions } from '../utils/jwt'
-import { getUserById } from '../services/user.service'
+import { getAllUsersService, getUserById } from '../services/user.service'
 import cloudinary from 'cloudinary'
 
 interface IRegistrationBody {
@@ -376,7 +376,7 @@ export const updateProfilePicture = CatchAsyncError(async (req: Request, res: Re
         }
 
         await user?.save()
-        
+
         await redis.set(userId?.toString() || '', JSON.stringify(user))
 
         res.status(200).json({
@@ -384,6 +384,14 @@ export const updateProfilePicture = CatchAsyncError(async (req: Request, res: Re
             user
         })
 
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400))
+    }
+})
+
+export const getAllUsers = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        getAllUsersService(res)
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 400))
     }
