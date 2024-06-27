@@ -60,8 +60,10 @@ export const createOrder = CatchAsyncError(async (req: Request, res: Response, n
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 500))
         }
+
+        const courseID: any = course._id
         
-        user?.course.push(course?._id)
+        user?.course.push(courseID)
         
         await user?.save()
         
