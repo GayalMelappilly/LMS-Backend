@@ -214,10 +214,7 @@ export const updateAccessToken = CatchAsyncError(async (req: Request, res: Respo
 
         await redis.set(user._id, JSON.stringify(user), "EX", 604800) // 7 days in seconds
 
-        res.status(200).json({
-            success: true,
-            accessToken,
-        })
+        next()
 
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 400))
@@ -266,20 +263,10 @@ interface IUpdateUserInfo {
 
 export const updateUserInfo = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { name, email } = req.body as IUpdateUserInfo
+        const { name } = req.body as IUpdateUserInfo
 
         const userId = req.user?._id?.toString() || ''
-
         const user = await userModel.findById(userId)
-
-        if (email && user) {
-            const isEmailExist = await userModel.findOne({ email })
-
-            if (isEmailExist) {
-                return next(new ErrorHandler('Email already exists', 400))
-            }
-            user.email = email
-        }
 
         if (name && user) {
             user.name = name
@@ -401,14 +388,20 @@ export const getAllUsers = CatchAsyncError(async (req: Request, res: Response, n
 
 export const updateUserRole = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-
-        const {id, role} = req.body
-
-        updateUserRoleService(res, id, role)
-
-    } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
-    }
+        const { email, role } = req.body;
+        const isUserExist = await userModel.findOne({ email });
+        if (isUserExist) {
+          const id = isUserExist._id;
+          updateUserRoleService(res, id, role);
+        } else {
+          res.status(400).json({
+            success: false,
+            message: "User not found",
+          });
+        }
+      } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400));
+      }
 })
 
 export const deleteUser = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
