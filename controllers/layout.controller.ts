@@ -75,8 +75,6 @@ export const editLayout = CatchAsyncError(
             if (type === "Banner") {
                 const bannerData: any = await LayoutModel.findOne({ type: "Banner" });
 
-                console.log("BANNER DATA: ",bannerData)
-
                 const { image, title, subTitle } = req.body;
 
                 const data = image.startsWith("https")
