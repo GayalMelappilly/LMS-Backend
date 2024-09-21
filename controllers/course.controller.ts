@@ -85,7 +85,7 @@ export const editCourse = CatchAsyncError(
 export const getSingleCourse = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        const courseId = req.params._id
+        const courseId = req.params.id
 
         const isCacheExist = await redis.get(courseId)
 
@@ -231,7 +231,9 @@ export const addAnswer = CatchAsyncError(async (req: Request, res: Response, nex
 
         const newAnswer: any = {
             user: req.user,
-            answer
+            answer,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
         }
 
         question.questionReplies.push(newAnswer)
@@ -319,12 +321,13 @@ export const addReview = CatchAsyncError(async (req: Request, res: Response, nex
 
         await course?.save()
 
-        const notification = {
+        await redis.set(courseId, JSON.stringify(course), "EX", 604800)
+
+        await NotificationModel.create({
+            user: req.user?._id,
             title: "New Review Receiver",
             message: `${req.user?.name} has given a review in ${course?.name}`
-        }
-
-        // create notification
+        })
 
         res.status(200).json({
             success: true,
@@ -361,7 +364,9 @@ export const addReplyToReview = CatchAsyncError(async (req: Request, res: Respon
 
         const replyData: any = {
             user: req.user,
-            comment
+            comment,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
         }
 
         if (!review.commentReplies) {
@@ -371,6 +376,8 @@ export const addReplyToReview = CatchAsyncError(async (req: Request, res: Respon
         review.commentReplies?.push(replyData)
 
         await course?.save()
+
+        await redis.set(courseId, JSON.stringify(course), "EX", 604800)
 
         res.status(200).json({
             success: true,
