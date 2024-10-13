@@ -9,6 +9,7 @@ import orderRouter from './routes/order.route'
 import notificationRouter from './routes/notification.route'
 import analyticsRouter from './routes/analytics.route'
 import layoutRouter from './routes/layout.route'
+import { rateLimit } from 'express-rate-limit'
 
 export const app = express()
 
@@ -18,6 +19,13 @@ app.use(cors({
     origin: ['http://localhost:3000'],
     credentials: true
 }))
+
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, 
+	limit: 100,
+	standardHeaders: 'draft-7',
+	legacyHeaders: false,
+})
 
 app.use('/api/v1', userRouter, courseRouter, orderRouter, notificationRouter, analyticsRouter, layoutRouter)
 
@@ -33,5 +41,7 @@ app.all('*', (req: Request, res: Response, next:NextFunction)=>{
     err.statusCode = 404
     next(err)
 })
+
+app.use(limiter)
 
 app.use(ErrorMiddleware)
