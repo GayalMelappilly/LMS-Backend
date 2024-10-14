@@ -10,6 +10,8 @@ interface EmailOptions{
     data: {[key:string]:any}
 }
 
+const __dirname = path.resolve();
+
 const sendMail = async (options: EmailOptions): Promise<void> => {
     const transporter: Transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
