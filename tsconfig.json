@@ -9,6 +9,6 @@
     "outDir": "./build",
     // "rootDir": "./src"
   },
-//   "include": ["src/**/*"],         
+  "include": ["server/**/*.ts"],         
   "exclude": ["node_modules"]
 }
