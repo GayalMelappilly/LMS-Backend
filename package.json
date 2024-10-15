@@ -2,7 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "main": "build/server.js",
-  "type": "commonjs",
+  "type": "module",
   "engines": {
     "node": "^18 || ^20"
   },

@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -8,16 +17,16 @@ const ErrorHandler_1 = __importDefault(require("../utils/ErrorHandler"));
 const catchAsyncError_1 = require("../middleware/catchAsyncError");
 const layout_model_1 = __importDefault(require("../models/layout.model"));
 const cloudinary_1 = __importDefault(require("cloudinary"));
-exports.createLayout = (0, catchAsyncError_1.CatchAsyncError)(async (req, res, next) => {
+exports.createLayout = (0, catchAsyncError_1.CatchAsyncError)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { type } = req.body;
-        const isTypeExist = await layout_model_1.default.findOne({ type });
+        const isTypeExist = yield layout_model_1.default.findOne({ type });
         if (isTypeExist) {
             return next(new ErrorHandler_1.default(`${type} already exists`, 400));
         }
         if (type === "Banner") {
             const { image, title, subTitle } = req.body;
-            const myCloud = await cloudinary_1.default.v2.uploader.upload(image, {
+            const myCloud = yield cloudinary_1.default.v2.uploader.upload(image, {
                 folder: "layout",
             });
             const banner = {
@@ -27,26 +36,26 @@ exports.createLayout = (0, catchAsyncError_1.CatchAsyncError)(async (req, res, n
                 },
                 title, subTitle
             };
-            await layout_model_1.default.create(banner);
+            yield layout_model_1.default.create(banner);
         }
         if (type === 'FAQ') {
             const { faq } = req.body;
-            const faqItems = await Promise.all(faq.map(async (item) => {
+            const faqItems = yield Promise.all(faq.map((item) => __awaiter(void 0, void 0, void 0, function* () {
                 return {
                     question: item.question,
                     answer: item.answer
                 };
-            }));
-            await layout_model_1.default.create({ type: "FAQ", faq: faqItems });
+            })));
+            yield layout_model_1.default.create({ type: "FAQ", faq: faqItems });
         }
         if (type === 'Categories') {
             const { categories } = req.body;
-            const categoriesItems = await Promise.all(categories.map(async (item) => {
+            const categoriesItems = yield Promise.all(categories.map((item) => __awaiter(void 0, void 0, void 0, function* () {
                 return {
                     title: item.title
                 };
-            }));
-            await layout_model_1.default.create({ type: "Categories", categories: categoriesItems });
+            })));
+            yield layout_model_1.default.create({ type: "Categories", categories: categoriesItems });
         }
         res.status(200).json({
             success: true,
@@ -56,16 +65,16 @@ exports.createLayout = (0, catchAsyncError_1.CatchAsyncError)(async (req, res, n
     catch (error) {
         return next(new ErrorHandler_1.default(error.message, 500));
     }
-});
-exports.editLayout = (0, catchAsyncError_1.CatchAsyncError)(async (req, res, next) => {
+}));
+exports.editLayout = (0, catchAsyncError_1.CatchAsyncError)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { type } = req.body;
         if (type === "Banner") {
-            const bannerData = await layout_model_1.default.findOne({ type: "Banner" });
+            const bannerData = yield layout_model_1.default.findOne({ type: "Banner" });
             const { image, title, subTitle } = req.body;
             const data = image.startsWith("https")
                 ? bannerData
-                : await cloudinary_1.default.v2.uploader.upload(image, {
+                : yield cloudinary_1.default.v2.uploader.upload(image, {
                     folder: "layout",
                 });
             const banner = {
@@ -73,36 +82,36 @@ exports.editLayout = (0, catchAsyncError_1.CatchAsyncError)(async (req, res, nex
                 image: {
                     public_id: image.startsWith("https")
                         ? bannerData.banner.image.public_id
-                        : data?.public_id,
+                        : data === null || data === void 0 ? void 0 : data.public_id,
                     url: image.startsWith("https")
                         ? bannerData.banner.image.url
-                        : data?.secure_url,
+                        : data === null || data === void 0 ? void 0 : data.secure_url,
                 },
                 title,
                 subTitle,
             };
-            await layout_model_1.default.findByIdAndUpdate(bannerData.id, { banner });
+            yield layout_model_1.default.findByIdAndUpdate(bannerData.id, { banner });
         }
         if (type === 'FAQ') {
             const { faq } = req.body;
-            const faqItem = await layout_model_1.default.findOne({ type: "FAQ" });
-            const faqItems = await Promise.all(faq.map(async (item) => {
+            const faqItem = yield layout_model_1.default.findOne({ type: "FAQ" });
+            const faqItems = yield Promise.all(faq.map((item) => __awaiter(void 0, void 0, void 0, function* () {
                 return {
                     question: item.question,
                     answer: item.answer
                 };
-            }));
-            await layout_model_1.default.findByIdAndUpdate(faqItem?._id, { type: "FAQ", faq: faqItems });
+            })));
+            yield layout_model_1.default.findByIdAndUpdate(faqItem === null || faqItem === void 0 ? void 0 : faqItem._id, { type: "FAQ", faq: faqItems });
         }
         if (type === 'Categories') {
             const { categories } = req.body;
-            const categoriesData = await layout_model_1.default.findOne({ type: "Categories" });
-            const categoriesItems = await Promise.all(categories.map(async (item) => {
+            const categoriesData = yield layout_model_1.default.findOne({ type: "Categories" });
+            const categoriesItems = yield Promise.all(categories.map((item) => __awaiter(void 0, void 0, void 0, function* () {
                 return {
                     title: item.title
                 };
-            }));
-            await layout_model_1.default.findByIdAndUpdate(categoriesData?._id, { type: "Categories", categories: categoriesItems });
+            })));
+            yield layout_model_1.default.findByIdAndUpdate(categoriesData === null || categoriesData === void 0 ? void 0 : categoriesData._id, { type: "Categories", categories: categoriesItems });
         }
         res.status(200).json({
             success: true,
@@ -112,11 +121,11 @@ exports.editLayout = (0, catchAsyncError_1.CatchAsyncError)(async (req, res, nex
     catch (error) {
         return next(new ErrorHandler_1.default(error.message, 500));
     }
-});
-exports.getLayoutByType = (0, catchAsyncError_1.CatchAsyncError)(async (req, res, next) => {
+}));
+exports.getLayoutByType = (0, catchAsyncError_1.CatchAsyncError)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { type } = req.params;
-        const layout = await layout_model_1.default.findOne({ type });
+        const layout = yield layout_model_1.default.findOne({ type });
         if (!layout) {
             return next(new ErrorHandler_1.default(`${type} not found`, 400));
         }
@@ -128,4 +137,4 @@ exports.getLayoutByType = (0, catchAsyncError_1.CatchAsyncError)(async (req, res
     catch (error) {
         return next(new ErrorHandler_1.default(error.message, 500));
     }
-});
+}));
