@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            line-height: 1.6;
+        }
+        .details {
+            margin-top: 20px;
+        }
+        .details th, .details td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Order Confirmation</h1>
+        <p>Hi <%= order.username %>,</p>
+        <p>Thank you for your order. Here are the details:</p>
+        <table class="details">
+            <tr>
+                <th>Order Name:</th>
+                <td><%= order.name %></td>
+            </tr>
+            <tr>
+                <th>Order ID:</th>
+                <td><%= order._id %></td>
+            </tr>
+            <tr>
+                <th>Course Name:</th>
+                <td><%= order.name %></td>
+            </tr>
+            <tr>
+                <th>Order Date:</th>
+                <td><%= order.date %></td>
+            </tr>
+            <tr>
+                <th>Subtotal:</th>
+                <td><%= order.price %></td>
+            </tr>
+            <tr>
+                <th>Total:</th>
+                <td><%= order.price %></td>
+            </tr>
+        </table>
+        <p>If you have any questions, feel free to contact us at connect.siwc@gmail.com.</p>
+        <p>Best regards,</p>
+        <p>Learnify.</p>
+    </div>
+</body>
+</html>
