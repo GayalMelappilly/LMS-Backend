@@ -16,7 +16,7 @@ export const app = express()
 app.use(express.json({limit: '50mb'}))
 app.use(cookieParser())
 app.use(cors({
-    origin: ['https://learnify-client-qk2oj0q08-gayalmelappillys-projects.vercel.app/'],
+    origin: ['https://learnify-client-tau.vercel.app/'],
     credentials: true
 }))
 
