@@ -8,9 +8,9 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "./build",
     "skipLibCheck": true,
-    // "types": ["node"]
     // "rootDir": "./src"
+    // "types": ["node"]
   },
-  "include": ["*.ts"],         
+  // "include": ["**/*.ts"],         
   "exclude": ["node_modules"]
 }
