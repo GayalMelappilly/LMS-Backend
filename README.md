@@ -1,6 +1,7 @@
 🌐 Learnify Backend
 Welcome to the Learnify Backend — the server-side powerhouse of Learnify, a dynamic Learning Management System (LMS) designed for educators and learners alike! This backend service provides robust APIs, efficient caching, secure authentication, real-time updates, and much more.
 
+
 📑 Table of Contents
 About Learnify
 Tech Stack
@@ -12,8 +13,10 @@ Folder Structure
 Future Improvements
 Contributing
 
+
 🎓 About Learnify
 Learnify is a full-featured LMS that allows users to create, sell, and enroll in courses, while administrators have access to advanced management tools. This backend serves as the foundation, handling everything from user authentication and payment processing to real-time notifications and caching.
+
 
 🛠 Tech Stack
 The Learnify backend is built with:
@@ -26,6 +29,7 @@ JWT — for secure token-based authentication.
 NodeMailer — for automated email notifications and OTP verification.
 Stripe — for secure payment processing.
 Cloudinary — for handling media uploads (images, videos).
+
 
 🚀 Features
 Multi-layered Authentication:
@@ -72,6 +76,7 @@ bash
 Copy code
 npm run dev
 
+
 🌍 Environment Variables
 Variable	Description
 MONGO_URI	MongoDB connection string
@@ -88,6 +93,7 @@ GITHUB_CLIENT_ID	GitHub OAuth client ID
 GITHUB_CLIENT_SECRET	GitHub OAuth client secret
 GOOGLE_CLIENT_ID	Google OAuth client ID
 GOOGLE_CLIENT_SECRET	Google OAuth client secret
+
 
 📚 API Endpoints
 User Authentication
@@ -106,9 +112,8 @@ GET /analytics/orders - Retrieve order data for analytics.
 GET /analytics/users - Retrieve user data for engagement insights.
 More endpoints are documented in the API Documentation.
 
+
 📁 Folder Structure
-plaintext
-Copy code
 learnify-backend/
 ├── controllers/          # Controllers for handling requests
 ├── models/               # Database schemas (Mongoose)
@@ -118,11 +123,13 @@ learnify-backend/
 ├── config/               # Configuration files (DB, Redis)
 └── server.js             # Main server file
 
+
 🌱 Future Improvements
 Enhanced Security: Implement multi-factor authentication.
 Performance Optimization: Further optimize database queries.
 Role-Based Access: Introduce fine-grained access control for different user roles.
 In-app Messaging: Add a real-time messaging feature for users.
+
 
 🤝 Contributing
 We welcome contributions! Here’s how you can help:
@@ -132,6 +139,7 @@ Create a new branch (git checkout -b feature/YourFeature).
 Commit your changes (git commit -m 'Add feature').
 Push to the branch (git push origin feature/YourFeature).
 Open a Pull Request.
+
 
 Thank you for exploring the Learnify Backend repository! Feel free to star this repo if you find it helpful ⭐ and reach out with questions or suggestions. Happy coding! 🚀
 
